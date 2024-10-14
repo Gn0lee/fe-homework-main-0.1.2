@@ -1,7 +1,7 @@
 import { DataGrid } from "@mui/x-data-grid/DataGrid";
 import { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import { Box, IconButton, Stack } from "@mui/material";
+import { IconButton, Stack } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { useAtomValue } from "jotai";
 
@@ -18,26 +18,64 @@ import LocationTablePagination from "./LocationTablePagination";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
 import StarOutlineRoundedIcon from "@mui/icons-material/StarOutlineRounded";
 import { Location } from "../types/location";
+import { usePutLocationStarIdsMutation } from "../query/mutation";
+
+function ResetStarredButton() {
+  const { mutate: putLocationStarIds } = usePutLocationStarIdsMutation();
+
+  return (
+    <IconButton onClick={() => putLocationStarIds([])}>
+      <RefreshIcon />
+    </IconButton>
+  );
+}
+
+function StarredButton({ id }: Location) {
+  const { mutate: putLocationStarIds } = usePutLocationStarIdsMutation();
+
+  const { data: starredLocationIds } = useQuery(starredLocationIdsQueryOptions);
+
+  if (!starredLocationIds) return null;
+
+  const isStarred = starredLocationIds.includes(id);
+
+  const handleClick = () => {
+    if (isStarred) {
+      putLocationStarIds(
+        starredLocationIds.filter((starred) => starred !== id),
+      );
+    } else {
+      putLocationStarIds([...starredLocationIds, id]);
+    }
+  };
+
+  return (
+    <IconButton onClick={handleClick}>
+      {isStarred ? (
+        <StarRoundedIcon sx={{ color: "yellow" }} />
+      ) : (
+        <StarOutlineRoundedIcon />
+      )}
+    </IconButton>
+  );
+}
 
 const columns: GridColDef<Location>[] = [
   {
     field: "is_starred",
-    headerName: "Starred",
-    renderHeader() {
-      return (
-        <IconButton>
-          <RefreshIcon />
-        </IconButton>
-      );
-    },
     sortable: false,
     disableColumnMenu: true,
     headerAlign: "center",
     width: 100,
+    align: "center",
+    renderHeader: () => <ResetStarredButton />,
+    renderCell: (params: GridRenderCellParams<Location>) => (
+      <StarredButton {...params.row} />
+    ),
   },
   {
     field: "name",
-    headerName: "Name",
+    headerName: "Locations",
     sortable: false,
     disableColumnMenu: true,
     flex: 1,
@@ -58,55 +96,12 @@ const columns: GridColDef<Location>[] = [
   },
 ];
 
-const useLocationTableColumns = () => {
-  const { data: starredLocationIds } = useQuery(starredLocationIdsQueryOptions);
-
-  return columns.map((column) => {
-    if (column.field === "is_starred") {
-      return {
-        ...column,
-        renderCell(params: GridRenderCellParams<Location>) {
-          if (starredLocationIds?.includes(params.row.id)) {
-            return (
-              <Box
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-                height="100%"
-              >
-                <IconButton>
-                  <StarRoundedIcon sx={{ color: "yellow" }} />
-                </IconButton>
-              </Box>
-            );
-          }
-          return (
-            <Box
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              height="100%"
-            >
-              <IconButton>
-                <StarOutlineRoundedIcon />
-              </IconButton>
-            </Box>
-          );
-        },
-      };
-    }
-    return column;
-  });
-};
-
 export default function LocationTable() {
   const page = useAtomValue(pageParamsAtom);
   const search = useAtomValue(searchParamsAtom);
   const isStarred = useAtomValue(isStarredParamsAtom);
 
   const { data } = useQuery(locationQueryOptions({ page, search, isStarred }));
-
-  const columns = useLocationTableColumns();
 
   if (!data) return null;
 

@@ -95,19 +95,18 @@ export const handlers = [
     });
   }),
 
-  http.put("/starred_location_ids", ({ request }) => {
-    if (!request.body) {
+  http.put("/starred_location_ids", async ({ request }) => {
+    const body = await request.json();
+
+    if (!body) {
       return HttpResponse.json(
         { error_msg: "Encountered unexpected error" },
         { status: 500 },
       );
     }
 
-    sessionStorage.setItem(
-      "starred_location_ids",
-      JSON.stringify(request.body),
-    );
+    sessionStorage.setItem("starred_location_ids", JSON.stringify(body));
 
-    return HttpResponse.json(null, { status: 204 });
+    return HttpResponse.text("ok");
   }),
 ];

@@ -31,7 +31,7 @@ export const locationQueryOptions = ({
   });
 
 export const starredLocationIdsQueryOptions = queryOptions({
-  queryKey: ["starred_location_ids"],
+  queryKey: ["starredLocationIds"],
   queryFn: () =>
     api.get("starred_location_ids").json<{ location_ids: Location["id"][] }>(),
   select: (data) => data.location_ids,
