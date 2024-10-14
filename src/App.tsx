@@ -1,7 +1,6 @@
 import { Container, Grid2, Typography, Stack } from "@mui/material";
 
-import SearchInput from "./components/SearchInput";
-import GroupSelect from "./components/GroupSelect";
+import SearchContainer from "./components/SearchContainer";
 
 function App() {
   return (
@@ -16,10 +15,7 @@ function App() {
           </Typography>
         </Grid2>
         <Grid2 size="grow">
-          <Stack direction="row" useFlexGap justifyContent="space-between">
-            <GroupSelect />
-            <SearchInput />
-          </Stack>
+          <SearchContainer />
         </Grid2>
       </Grid2>
     </Container>

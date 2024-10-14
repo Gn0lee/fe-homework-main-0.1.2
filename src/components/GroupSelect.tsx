@@ -1,9 +1,17 @@
 import { Select, MenuItem, Stack } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSetAtom } from "jotai";
+
+import { isStarredParamsAtom } from "../store/atom";
 
 export default function GroupSelect() {
   const [selected, setSelected] = useState<string>("all");
+  const setIsStarredParams = useSetAtom(isStarredParamsAtom);
+
+  useEffect(() => {
+    setIsStarredParams(selected === "starred" ? "true" : "false");
+  }, [selected, setIsStarredParams]);
 
   return (
     <Select
