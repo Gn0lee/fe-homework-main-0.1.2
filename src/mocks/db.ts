@@ -3,6 +3,7 @@ import { faker } from "@faker-js/faker";
 export interface Location {
   id: number;
   name: string;
+  type: string;
   robot: {
     id: string;
     is_online: boolean;
@@ -14,6 +15,7 @@ export const locations: Location[] = Array.from(
   (_, index) => ({
     id: index,
     name: faker.company.name(),
+    type: faker.company.buzzVerb(),
     robot:
       Math.random() > 0.5
         ? {
