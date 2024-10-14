@@ -1,6 +1,6 @@
 import { http, HttpResponse } from "msw";
 
-import { locations, starredLocations } from "./db";
+import { locations } from "./db";
 import { Location } from "../types/location";
 
 interface LocationsResult {
@@ -50,8 +50,12 @@ export const handlers = [
 
     const isStarred = starredParameter === "true";
 
+    const starredLocationIds = JSON.parse(
+      sessionStorage.getItem("starred_location_ids") || "[]",
+    );
+
     const filteredLocations = locations.filter((el) => {
-      if (isStarred && !starredLocations.includes(el.id)) {
+      if (isStarred && !starredLocationIds.includes(el.id)) {
         return false;
       }
 

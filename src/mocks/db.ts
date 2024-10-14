@@ -17,4 +17,4 @@ export const locations: Location[] = Array.from(
   }),
 );
 
-export const starredLocations: Location["id"][] = [];
+

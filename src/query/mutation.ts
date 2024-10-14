@@ -30,8 +30,11 @@ export const usePutLocationStarIdsMutation = () => {
         context?.previousIds?.location_ids,
       );
     },
-    onSettled: () => {
+    onSettled: (_, __, ____, context) => {
       queryClient.invalidateQueries(starredLocationIdsQueryOptions);
+      queryClient.invalidateQueries({
+        queryKey: ["locations"],
+      });
     },
   });
 };
