@@ -23,6 +23,7 @@ export default function LocationTablePagination({
       count={Math.ceil(totalCount / PAGE_SIZE)}
       page={page}
       onChange={handlePageChange}
+      color="primary"
     />
   );
 }
