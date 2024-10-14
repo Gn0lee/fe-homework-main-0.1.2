@@ -1,4 +1,4 @@
-import { Box, Container, Grid2, Typography, Stack } from "@mui/material";
+import { Container, Grid2, Typography, Stack } from "@mui/material";
 
 import SearchInput from "./components/SearchInput";
 import GroupSelect from "./components/GroupSelect";
