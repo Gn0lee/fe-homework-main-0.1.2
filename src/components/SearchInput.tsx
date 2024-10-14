@@ -8,11 +8,11 @@ import { throttle } from "lodash-es";
 import { searchParamsAtom } from "../store/atom";
 
 export default function SearchInput() {
-  const [search, setSearch] = useState<string>("");
+  const [search, setSearch] = useState<string | undefined>(undefined);
   const setSearchParams = useSetAtom(searchParamsAtom);
 
   useEffect(() => {
-    const throttledSetSearchParams = throttle((value: string) => {
+    const throttledSetSearchParams = throttle((value?: string) => {
       setSearchParams(value);
     }, 500);
 
