@@ -1,14 +1,5 @@
 import { faker } from "@faker-js/faker";
-
-export interface Location {
-  id: number;
-  name: string;
-  type: string;
-  robot: {
-    id: string;
-    is_online: boolean;
-  } | null;
-}
+import { Location } from "../types/location";
 
 export const locations: Location[] = Array.from(
   { length: 100 },

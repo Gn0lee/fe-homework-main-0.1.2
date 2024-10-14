@@ -1,6 +1,7 @@
-import { Container, Grid2, Typography, Stack } from "@mui/material";
+import { Container, Grid2, Typography } from "@mui/material";
 
 import SearchContainer from "./components/SearchContainer";
+import LocationTable from "./components/LocationTable";
 
 function App() {
   return (
@@ -16,6 +17,9 @@ function App() {
         </Grid2>
         <Grid2 size="grow">
           <SearchContainer />
+        </Grid2>
+        <Grid2>
+          <LocationTable />
         </Grid2>
       </Grid2>
     </Container>
