@@ -1,7 +1,7 @@
 import { DataGrid } from "@mui/x-data-grid/DataGrid";
 import { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import { IconButton, Stack } from "@mui/material";
+import { Box, IconButton, Stack } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { useAtomValue } from "jotai";
 
@@ -21,6 +21,8 @@ import { Location } from "../types/location";
 import { usePutLocationStarIdsMutation } from "../query/mutation";
 import { Button } from "@mui/material";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import Link from "@mui/material/Link";
+import CircleIcon from "@mui/icons-material/Circle";
 
 function ResetStarredButton() {
   const { mutate: putLocationStarIds } = usePutLocationStarIdsMutation();
@@ -77,6 +79,19 @@ function LocationButton({ name, robot }: Location) {
   );
 }
 
+function RobotButton({ robot }: Location) {
+  const isOnline = robot?.is_online;
+
+  if (!robot) return <Link>Add</Link>;
+
+  return (
+    <Box display="flex" alignItems="center" gap={1}>
+      <CircleIcon sx={{ color: isOnline ? "green" : "gray" }} />
+      <div>{robot.id}</div>
+    </Box>
+  );
+}
+
 const columns: GridColDef<Location>[] = [
   {
     field: "is_starred",
@@ -106,6 +121,9 @@ const columns: GridColDef<Location>[] = [
     sortable: false,
     disableColumnMenu: true,
     flex: 1,
+    renderCell: (params: GridRenderCellParams<Location>) => (
+      <RobotButton {...params.row} />
+    ),
   },
   {
     field: "type",
