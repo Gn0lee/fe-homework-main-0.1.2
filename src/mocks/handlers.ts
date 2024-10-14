@@ -1,26 +1,84 @@
 import { http, HttpResponse } from "msw";
 
-import { Location } from "./db";
+import { locations, Location, starredLocations } from "./db";
 
 interface LocationsResult {
   total_count: number;
   locations: Location[];
 }
 
-interface LocationsPathParams {
-  page: string;
-  location_name: string;
-  robot_id: string;
-  is_starred: string;
-}
-
 export const handlers = [
-  http.get<LocationsPathParams>("/locations", ({ params }) => {
-    // Please implement filtering feature here
+  http.get("/locations", ({ request }) => {
+    const url = new URL(request.url, "http://localhost:3000");
+    const searchParams = url.searchParams;
+
+    const pageParameter = searchParams.get("page");
+
+    const searchParameter = searchParams.get("search");
+    const starredParameter = searchParams.get("is_starred");
+
+    if (!pageParameter) {
+      return HttpResponse.json(
+        { error_msg: "page parameter is required" },
+        { status: 400 },
+      );
+    }
+
+    const page = parseInt(pageParameter);
+
+    if (isNaN(page)) {
+      return HttpResponse.json(
+        { error_msg: "page parameter must be an integer" },
+        { status: 400 },
+      );
+    }
+
+    if (!starredParameter) {
+      return HttpResponse.json(
+        { error_msg: "is_starred parameter is required" },
+        { status: 400 },
+      );
+    }
+
+    if (starredParameter !== "true" && starredParameter !== "false") {
+      return HttpResponse.json(
+        { error_msg: "is_starred parameter must be true or false" },
+        { status: 400 },
+      );
+    }
+
+    const isStarred = starredParameter === "true";
+
+    const filteredLocations = locations.filter((el) => {
+      if (isStarred && !starredLocations.includes(el.id)) {
+        return false;
+      }
+
+      if (
+        searchParameter &&
+        !(
+          el.robot?.id.includes(searchParameter) ||
+          el.name.includes(searchParameter)
+        )
+      ) {
+        return false;
+      }
+
+      return true;
+    });
+
+    const pageSize = 6;
+
+    const totalCount = filteredLocations.length;
+
+    const paginatedLocations = filteredLocations.slice(
+      (page - 1) * pageSize,
+      page * pageSize,
+    );
 
     const result: LocationsResult = {
-      total_count: 0,
-      locations: [],
+      total_count: totalCount,
+      locations: paginatedLocations,
     };
 
     return HttpResponse.json(result);

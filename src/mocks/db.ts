@@ -23,3 +23,5 @@ export const locations: Location[] = Array.from(
         : null,
   }),
 );
+
+export const starredLocations: Location["id"][] = [];
