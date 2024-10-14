@@ -1,7 +1,7 @@
 import { DataGrid } from "@mui/x-data-grid/DataGrid";
 import { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import { Box, IconButton, Stack } from "@mui/material";
+import { Box, IconButton, Stack, Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { useAtomValue } from "jotai";
 
@@ -134,6 +134,19 @@ const columns: GridColDef<Location>[] = [
   },
 ];
 
+function NoRowsOverlay() {
+  return (
+    <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      minHeight="200px"
+    >
+      <Typography variant="h6">No data</Typography>
+    </Box>
+  );
+}
+
 export default function LocationTable() {
   const page = useAtomValue(pageParamsAtom);
   const search = useAtomValue(searchParamsAtom);
@@ -143,17 +156,21 @@ export default function LocationTable() {
 
   if (!data) return null;
 
+  if (data.total_count === 0) return <NoRowsOverlay />;
+
   return (
     <Stack direction="column" spacing={2} alignItems="center" width="100%">
       <DataGrid
         columns={columns}
-        rows={data.locations}
+        rows={data?.locations ?? []}
         disableRowSelectionOnClick
         checkboxSelection
         hideFooter
         sx={{ width: "100%" }}
       />
-      <LocationTablePagination totalCount={data.total_count} />
+      {data?.total_count ? (
+        <LocationTablePagination totalCount={data.total_count} />
+      ) : null}
     </Stack>
   );
 }
