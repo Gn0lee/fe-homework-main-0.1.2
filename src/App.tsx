@@ -2,7 +2,7 @@ import { Container, Grid2, Typography } from "@mui/material";
 
 import SearchContainer from "./components/SearchContainer";
 import LocationTable from "./components/LocationTable";
-import LocationTablePagination from "./components/LocationTablePagination";
+
 
 function App() {
   return (
@@ -21,9 +21,6 @@ function App() {
         </Grid2>
         <Grid2>
           <LocationTable />
-        </Grid2>
-        <Grid2 justifyContent="center" display="flex">
-          <LocationTablePagination />
         </Grid2>
       </Grid2>
     </Container>

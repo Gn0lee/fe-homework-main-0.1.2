@@ -3,31 +3,30 @@ import SearchIcon from "@mui/icons-material/Search";
 import InputAdornment from "@mui/material/InputAdornment";
 import { useState, useEffect } from "react";
 import { useSetAtom } from "jotai";
-import { throttle } from "lodash-es";
 
 import { searchParamsAtom } from "../store/atom";
 
+const DEBOUNCE_TIME = 500;
+
 export default function SearchInput() {
-  const [search, setSearch] = useState<string | undefined>(undefined);
+  const [enteredSearch, setEnteredSearch] = useState<string>("");
   const setSearchParams = useSetAtom(searchParamsAtom);
 
   useEffect(() => {
-    const throttledSetSearchParams = throttle((value?: string) => {
-      setSearchParams(value);
-    }, 500);
-
-    throttledSetSearchParams(search);
+    const debouncedTimeout = setTimeout(() => {
+      setSearchParams(enteredSearch);
+    }, DEBOUNCE_TIME);
 
     return () => {
-      throttledSetSearchParams.cancel();
+      clearTimeout(debouncedTimeout);
     };
-  }, [search, setSearchParams]);
+  }, [enteredSearch, setSearchParams]);
 
   return (
     <TextField
       label="Search robot or location"
-      value={search}
-      onChange={(e) => setSearch(e.target.value)}
+      value={enteredSearch}
+      onChange={(e) => setEnteredSearch(e.target.value)}
       slotProps={{
         input: {
           endAdornment: (

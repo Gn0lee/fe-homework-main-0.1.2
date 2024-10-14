@@ -1,14 +1,28 @@
 import { Pagination } from "@mui/material";
 import { useAtom } from "jotai";
 
-import { pageAtom } from "../store/atom";
+import { pageParamsAtom } from "../store/atom";
 
-export default function LocationTablePagination() {
-  const [page, setPage] = useAtom(pageAtom);
+interface LocationTablePaginationProps {
+  totalCount: number;
+}
+
+const PAGE_SIZE = 6;
+
+export default function LocationTablePagination({
+  totalCount,
+}: LocationTablePaginationProps) {
+  const [page, setPage] = useAtom(pageParamsAtom);
 
   const handlePageChange = (_: unknown, value: number) => {
     setPage(value);
   };
 
-  return <Pagination page={page} onChange={handlePageChange} />;
+  return (
+    <Pagination
+      count={Math.ceil(totalCount / PAGE_SIZE)}
+      page={page}
+      onChange={handlePageChange}
+    />
+  );
 }
