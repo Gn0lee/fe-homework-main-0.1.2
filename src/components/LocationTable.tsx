@@ -19,6 +19,8 @@ import StarRoundedIcon from "@mui/icons-material/StarRounded";
 import StarOutlineRoundedIcon from "@mui/icons-material/StarOutlineRounded";
 import { Location } from "../types/location";
 import { usePutLocationStarIdsMutation } from "../query/mutation";
+import { Button } from "@mui/material";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
 function ResetStarredButton() {
   const { mutate: putLocationStarIds } = usePutLocationStarIdsMutation();
@@ -60,6 +62,21 @@ function StarredButton({ id }: Location) {
   );
 }
 
+function LocationButton({ name, robot }: Location) {
+  const isOnline = robot?.is_online;
+
+  return (
+    <Button
+      disabled={!isOnline}
+      endIcon={<ChevronRightIcon />}
+      variant="contained"
+      fullWidth
+    >
+      {name}
+    </Button>
+  );
+}
+
 const columns: GridColDef<Location>[] = [
   {
     field: "is_starred",
@@ -79,6 +96,9 @@ const columns: GridColDef<Location>[] = [
     sortable: false,
     disableColumnMenu: true,
     flex: 1,
+    renderCell: (params: GridRenderCellParams<Location>) => (
+      <LocationButton {...params.row} />
+    ),
   },
   {
     field: "robot",
